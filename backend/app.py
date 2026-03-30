@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
 import uvicorn
+from sqlalchemy.exc import IntegrityError
 from database import create_db_and_tables, get_session
 from models import Person, PersonCreate, Relationship, TreeView
 from sqlmodel import Session, select
@@ -123,6 +124,13 @@ def delete_person(person_id: UUID, session: Session = Depends(get_session)):
 def create_relationship(
     parent_id: UUID, child_id: UUID, session: Session = Depends(get_session)
 ):
+    existing_relationship = session.get(Relationship, (parent_id, child_id))
+    if existing_relationship:
+        raise HTTPException(
+            status_code=400,
+            detail="Relationship already exists between this parent and child.",
+        )
+
     try:
         validate_relationship(parent_id, child_id, session)
     except ValueError as e:
@@ -130,7 +138,14 @@ def create_relationship(
 
     relationship = Relationship(parent_id=parent_id, child_id=child_id)
     session.add(relationship)
-    session.commit()
+    try:
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Relationship already exists between this parent and child.",
+        )
     session.refresh(relationship)
     return relationship
 

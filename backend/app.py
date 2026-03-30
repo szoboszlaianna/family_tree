@@ -4,7 +4,7 @@ from database import create_db_and_tables, get_session
 from models import Person, PersonCreate, Relationship
 from sqlmodel import Session, select
 from uuid import UUID
-from validation import validate_relationship
+from validation import validate_dob_not_in_future, validate_relationship
 
 DATABASE_URL = "sqlite:///./family_tree.db"
 
@@ -43,6 +43,11 @@ def health() -> dict[str, str]:
 )
 def create_person(person_data: PersonCreate, session: Session = Depends(get_session)):
     """Create and persist a person from request payload data."""
+    try:
+        validate_dob_not_in_future(person_data.date_of_birth)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     person = Person(**person_data.model_dump())
     session.add(person)
     session.commit()

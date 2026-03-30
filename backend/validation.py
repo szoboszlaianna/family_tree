@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlmodel import select, Session
 from models import Person, Relationship
 
@@ -15,6 +17,11 @@ def validate_person_exists(person_id, session: Session):
     if not person:
         raise ValueError(f"Person with id {person_id} does not exist.")
     return person  # needed for age check later
+
+
+def validate_dob_not_in_future(date_of_birth: date) -> None:
+    if date_of_birth > date.today():
+        raise ValueError("Date of birth cannot be in the future.")
 
 
 def validate_max_parents(child_id, session: Session):

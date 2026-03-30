@@ -1,9 +1,10 @@
 import pytest
-from datetime import date
+from datetime import date, timedelta
 from uuid import uuid4
 from models import Person, Relationship
 from validation import (
     validate_age_gap,
+    validate_dob_not_in_future,
     validate_not_self_relationship,
     validate_max_parents,
     validate_person_exists,
@@ -66,6 +67,15 @@ def test_age_gap_boundary_not_yet_passed():
     child = Person(name="B", date_of_birth=date(1995, 1, 1))
     with pytest.raises(ValueError):  # only 14 years and 1 day
         validate_age_gap(parent, child)
+
+
+def test_dob_today_passes():
+    validate_dob_not_in_future(date.today())
+
+
+def test_dob_future_raises():
+    with pytest.raises(ValueError):
+        validate_dob_not_in_future(date.today() + timedelta(days=1))
 
 
 # ─── test max parents ─────────────────────────────────────────

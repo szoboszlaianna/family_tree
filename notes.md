@@ -4,7 +4,12 @@ int | None for the primary key field is used so that in Python code we can creat
 
 CYCLE detection with BFS, because family trees  are usually wider than deeper.
 
+# We manually delete relationships before the person
+# because SQLite doesn't enforce FK cascades by default
+# This keeps the DB clean
 
 AI used: help generate tests.
 
 Generate cycle search based on bfs
+
+add documentation and test cases to be used in swagger ui.

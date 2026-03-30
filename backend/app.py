@@ -1,9 +1,10 @@
 from fastapi import Depends, FastAPI, HTTPException
 import uvicorn
 from database import create_db_and_tables, get_session
-from models import Person, PersonCreate
-from sqlmodel import Session
+from models import Person, PersonCreate, Relationship
+from sqlmodel import Session, select
 from uuid import UUID
+from validation import validate_relationship
 
 DATABASE_URL = "sqlite:///./family_tree.db"
 
@@ -77,6 +78,68 @@ def list_people(session: Session = Depends(get_session)):
     """List all person records."""
     people = session.query(Person).all()
     return people
+
+
+@app.delete(
+    "/people/{person_id}",
+    tags=["People"],
+    summary="Delete a person",
+    description=(
+        "Deletes a person by UUID. Any parent-child relationships where this person is "
+        "a parent or child are deleted first."
+    ),
+    response_description="Deletion outcome including deleted relationship count.",
+)
+def delete_person(person_id: UUID, session: Session = Depends(get_session)):
+    """Delete a person and any related relationships."""
+    person = session.get(Person, person_id)
+    if not person:
+        raise HTTPException(status_code=404, detail="Person not found")
+
+    # Delete their relationships first to avoid orphaned records
+    relationships = session.exec(
+        select(Relationship).where(
+            (Relationship.parent_id == person_id) | (Relationship.child_id == person_id)
+        )
+    ).all()
+    for rel in relationships:
+        session.delete(rel)
+
+    session.delete(person)
+    session.commit()
+    return {
+        "ok": True,
+        "deleted_person_id": str(person_id),
+        "deleted_relationships": len(relationships),
+    }
+
+
+@app.post("/relationships", response_model=Relationship)
+def create_relationship(
+    parent_id: UUID, child_id: UUID, session: Session = Depends(get_session)
+):
+    try:
+        validate_relationship(parent_id, child_id, session)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    relationship = Relationship(parent_id=parent_id, child_id=child_id)
+    session.add(relationship)
+    session.commit()
+    session.refresh(relationship)
+    return relationship
+
+
+@app.delete("/relationships/{parent_id}/{child_id}")
+def delete_relationship(
+    parent_id: UUID, child_id: UUID, session: Session = Depends(get_session)
+):
+    relationship = session.get(Relationship, (parent_id, child_id))
+    if not relationship:
+        raise HTTPException(status_code=404, detail="Relationship not found")
+    session.delete(relationship)
+    session.commit()
+    return {"ok": True}
 
 
 if __name__ == "__main__":

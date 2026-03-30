@@ -51,3 +51,12 @@ def validate_no_cycles(parent_id, child_id, session: Session):
         for p in parents:
             if p not in visited:
                 to_visit.append(p)
+
+
+def validate_relationship(parent_id, child_id, session: Session):
+    validate_not_self_relationship(parent_id, child_id)
+    parent = validate_person_exists(parent_id, session)
+    child = validate_person_exists(child_id, session)
+    validate_age_gap(parent, child)
+    validate_max_parents(child_id, session)
+    validate_no_cycles(parent_id, child_id, session)

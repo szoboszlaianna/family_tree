@@ -22,3 +22,9 @@ class Relationship(SQLModel, table=True):
     parent_id: UUID = Field(foreign_key="person.id", primary_key=True, nullable=False)
     child_id: UUID = Field(foreign_key="person.id", primary_key=True, nullable=False)
     created_at: date = Field(default_factory=date.today, nullable=False)
+
+
+class TreeView(SQLModel):
+    people: list[Person]
+    relationships: list[Relationship]
+    root_ids: list[UUID]

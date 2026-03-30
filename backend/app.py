@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 import uvicorn
 from database import create_db_and_tables, get_session
-from models import Person, PersonCreate, Relationship
+from models import Person, PersonCreate, Relationship, TreeView
 from sqlmodel import Session, select
 from uuid import UUID
 from validation import validate_dob_not_in_future, validate_relationship
@@ -145,6 +145,31 @@ def delete_relationship(
     session.delete(relationship)
     session.commit()
     return {"ok": True}
+
+
+@app.get(
+    "/tree",
+    response_model=TreeView,
+    tags=["Tree"],
+    summary="Get family tree view",
+    description=(
+        "Returns all people and parent-child edges in one payload for frontend rendering. "
+        "Includes root person IDs (people with no recorded parents)."
+    ),
+    response_description="Graph-friendly family tree payload.",
+)
+def get_tree(session: Session = Depends(get_session)):
+    people = session.exec(select(Person)).all()
+    relationships = session.exec(select(Relationship)).all()
+
+    child_ids = {relationship.child_id for relationship in relationships}
+    root_ids = [person.id for person in people if person.id not in child_ids]
+
+    return TreeView(
+        people=people,
+        relationships=relationships,
+        root_ids=root_ids,
+    )
 
 
 if __name__ == "__main__":

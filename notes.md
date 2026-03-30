@@ -13,3 +13,9 @@ AI used: help generate tests.
 Generate cycle search based on bfs
 
 add documentation and test cases to be used in swagger ui.
+
+Add a comment in "What I would do with more time"
+in your README:
+
+  "Split routes into separate router files
+   as the API grows"

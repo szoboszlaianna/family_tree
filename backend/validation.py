@@ -22,7 +22,7 @@ def validate_max_parents(child_id, session: Session):
         select(Relationship).where(Relationship.child_id == child_id)
     ).all()
 
-    if len(parents) > 2:
+    if len(parents) >= 2:
         raise ValueError("A child cannot have more than two parents.")
 
 

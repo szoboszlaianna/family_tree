@@ -75,11 +75,9 @@ def test_max_parents_exceeded(session):
     child = make_person(session, "Child", date(2000, 1, 1))
     parent1 = make_person(session, "Parent1", date(1970, 1, 1))
     parent2 = make_person(session, "Parent2", date(1975, 1, 1))
-    parent3 = make_person(session, "Parent3", date(1980, 1, 1))
 
     make_relationship(session, parent1, child)
     make_relationship(session, parent2, child)
-    make_relationship(session, parent3, child)
 
     with pytest.raises(ValueError):
         validate_max_parents(child.id, session)
@@ -88,10 +86,8 @@ def test_max_parents_exceeded(session):
 def test_max_parents_not_exceeded(session):
     child = make_person(session, "Child", date(2000, 1, 1))
     parent1 = make_person(session, "Parent1", date(1970, 1, 1))
-    parent2 = make_person(session, "Parent2", date(1975, 1, 1))
 
     make_relationship(session, parent1, child)
-    make_relationship(session, parent2, child)
 
     validate_max_parents(child.id, session)  # should not raise
 

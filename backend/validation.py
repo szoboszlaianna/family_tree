@@ -4,7 +4,6 @@ from sqlmodel import select, Session
 from models import Person, Relationship
 
 MINIMUM_PARENT_AGE_GAP_YEARS = 15
-ONE_YEAR_DAYS = 365.25
 
 
 def validate_not_self_relationship(parent_id, child_id):
@@ -34,8 +33,14 @@ def validate_max_parents(child_id, session: Session):
 
 
 def validate_age_gap(parent: Person, child: Person) -> None:
-    age_gap_days = (child.date_of_birth - parent.date_of_birth).days
-    if age_gap_days < MINIMUM_PARENT_AGE_GAP_YEARS * ONE_YEAR_DAYS:
+    parent_dob = parent.date_of_birth
+    child_dob = child.date_of_birth
+
+    age_gap_years = child_dob.year - parent_dob.year
+    if (child_dob.month, child_dob.day) < (parent_dob.month, parent_dob.day):
+        age_gap_years -= 1
+
+    if age_gap_years < MINIMUM_PARENT_AGE_GAP_YEARS:
         raise ValueError(
             f"Parent must be at least {MINIMUM_PARENT_AGE_GAP_YEARS} years older than child."
         )

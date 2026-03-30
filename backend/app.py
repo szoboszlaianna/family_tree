@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException
 import uvicorn
 from sqlalchemy.exc import IntegrityError
@@ -9,16 +11,19 @@ from validation import validate_dob_not_in_future, validate_relationship
 
 DATABASE_URL = "sqlite:///./family_tree.db"
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    create_db_and_tables()
+    yield
+
+
 app = FastAPI(
     title="Family Tree API",
     description="API for managing people and parent-child relationships in a simple family tree.",
     version="0.1.0",
+    lifespan=lifespan,
 )
-
-
-@app.on_event("startup")
-def on_startup() -> None:
-    create_db_and_tables()
 
 
 @app.get(

@@ -82,7 +82,7 @@ def get_person(person_id: UUID, session: Session = Depends(get_session)):
 )
 def list_people(session: Session = Depends(get_session)):
     """List all person records."""
-    people = session.query(Person).all()
+    people = session.exec(select(Person)).all()
     return people
 
 

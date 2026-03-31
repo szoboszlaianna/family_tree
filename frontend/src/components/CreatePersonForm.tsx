@@ -72,7 +72,6 @@ export function CreatePersonForm({
             <p className="m-0 text-sm text-rose-700">{errors.name.message}</p>
           )}
         </label>
-
         <label className="grid gap-1.5">
           <span className="text-sm font-semibold text-slate-800">
             Date of Birth

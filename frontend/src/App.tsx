@@ -57,7 +57,6 @@ function AppContent() {
         <p className="text-xs font-bold uppercase tracking-[0.08em] text-teal-800">
           Family Tree
         </p>
-        <h1>People Directory</h1>
       </header>
 
       <section className="grid gap-5 md:grid-cols-2 md:items-start">

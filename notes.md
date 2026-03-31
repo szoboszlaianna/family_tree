@@ -19,3 +19,6 @@ in your README:
 
   "Split routes into separate router files
    as the API grows"
+
+
+  Used ai to help me with the layout,a nd finding the right tailwind classes

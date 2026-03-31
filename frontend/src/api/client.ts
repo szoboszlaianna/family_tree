@@ -16,6 +16,37 @@ const api = axios.create({
   },
 });
 
+type ApiErrorPayload = {
+  detail?: string;
+};
+
+export function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as ApiErrorPayload | string | undefined;
+    if (typeof data === "string" && data.trim().length > 0) {
+      return data;
+    }
+    if (
+      data &&
+      typeof data === "object" &&
+      typeof data.detail === "string" &&
+      data.detail.trim().length > 0
+    ) {
+      return data.detail;
+    }
+    if (typeof error.message === "string" && error.message.trim().length > 0) {
+      return error.message;
+    }
+    return fallback;
+  }
+
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return error.message;
+  }
+
+  return fallback;
+}
+
 // People endpoints
 export const peopleApi = {
   list: () => api.get<Person[]>("/people"),

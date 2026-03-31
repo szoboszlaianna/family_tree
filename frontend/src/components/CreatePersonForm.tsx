@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { getApiErrorMessage } from "../api/client";
 import { useCreatePerson } from "../api/hooks";
 import type { PersonCreate } from "../api/types";
 
@@ -29,10 +30,10 @@ export function CreatePersonForm({
     },
   });
 
-  const createErrorMessage =
-    createError instanceof Error
-      ? createError.message
-      : "Failed to create person.";
+  const createErrorMessage = getApiErrorMessage(
+    createError,
+    "Failed to create person.",
+  );
 
   const onSubmit = (data: PersonCreate) => {
     createPerson(
@@ -45,8 +46,8 @@ export function CreatePersonForm({
           reset();
           onSuccessToast("Person added successfully.");
         },
-        onError: () => {
-          onErrorToast(createErrorMessage);
+        onError: (error) => {
+          onErrorToast(getApiErrorMessage(error, "Failed to create person."));
         },
       },
     );

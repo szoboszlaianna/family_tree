@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { getApiErrorMessage } from "../api/client";
 import { useCreateRelationship } from "../api/hooks";
 import type { Person } from "../api/types";
 
@@ -35,10 +36,10 @@ export function CreateRelationshipForm({
     },
   });
 
-  const createErrorMessage =
-    createError instanceof Error
-      ? createError.message
-      : "Failed to create relationship.";
+  const createErrorMessage = getApiErrorMessage(
+    createError,
+    "Failed to create relationship.",
+  );
 
   const onSubmit = (data: RelationshipFormValues) => {
     createRelationship(data, {
@@ -46,8 +47,10 @@ export function CreateRelationshipForm({
         reset();
         onSuccessToast("Relationship added successfully.");
       },
-      onError: () => {
-        onErrorToast(createErrorMessage);
+      onError: (error) => {
+        onErrorToast(
+          getApiErrorMessage(error, "Failed to create relationship."),
+        );
       },
     });
   };

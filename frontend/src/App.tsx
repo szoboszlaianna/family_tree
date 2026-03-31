@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { usePeopleList } from "./api/hooks";
 import { CreatePersonForm } from "./components/CreatePersonForm";
 import { FamilyTreeGraph } from "./components/FamilyTreeGraph";
-import { CreateRelationshipForm } from "./components/CreateRelationShipForm";
+import { CreateRelationshipForm } from "./components/RelationshipCreateForm";
 
 function AppContent() {
   const { data: people } = usePeopleList();
@@ -17,8 +17,10 @@ function AppContent() {
         <h1>People Directory</h1>
       </header>
 
-      <CreatePersonForm />
-      <CreateRelationshipForm people={people ?? []} />
+      <section className="grid gap-5 md:grid-cols-2 md:items-start">
+        <CreatePersonForm />
+        <CreateRelationshipForm people={people ?? []} />
+      </section>
       <FamilyTreeGraph />
     </main>
   );

@@ -122,6 +122,11 @@ function buildLayout(
               <p className="m-0 text-xs text-slate-600">
                 Date of birth: {person.date_of_birth}
               </p>
+              {person.place_of_birth && (
+                <p className="m-0 text-xs text-slate-600">
+                  Place of birth: {person.place_of_birth}
+                </p>
+              )}
             </div>
           ),
         },

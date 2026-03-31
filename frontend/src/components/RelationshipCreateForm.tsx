@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateRelationship } from "../api/hooks";
 import type { Person } from "../api/types";
@@ -10,12 +9,13 @@ type RelationshipFormValues = {
 
 interface CreateRelationshipFormProps {
   people: Person[];
+  onSuccessToast: (message: string) => void;
 }
 
 export function CreateRelationshipForm({
   people,
+  onSuccessToast,
 }: CreateRelationshipFormProps) {
-  const [successToast, setSuccessToast] = useState<string | null>(null);
   const {
     mutate: createRelationship,
     isPending,
@@ -39,42 +39,18 @@ export function CreateRelationshipForm({
       : "Failed to create relationship.";
 
   const onSubmit = (data: RelationshipFormValues) => {
-    setSuccessToast(null);
     createRelationship(data, {
       onSuccess: () => {
         reset();
-        setSuccessToast("Relationship added successfully.");
+        onSuccessToast("Relationship added successfully.");
       },
     });
   };
 
-  useEffect(() => {
-    if (!successToast) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setSuccessToast(null);
-    }, 2500);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [successToast]);
-
   const notEnoughPeople = people.length < 2;
 
   return (
-    <section className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
-      {successToast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="pointer-events-none absolute right-3 top-3 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-800 shadow"
-        >
-          {successToast}
-        </div>
-      )}
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
       <h2>Add a Relationship</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}

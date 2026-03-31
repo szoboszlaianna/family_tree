@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useCreatePerson } from "../api/hooks";
 import type { PersonCreate } from "../api/types";
 
-export function CreatePersonForm() {
-  const [successToast, setSuccessToast] = useState<string | null>(null);
+interface CreatePersonFormProps {
+  onSuccessToast: (message: string) => void;
+}
+
+export function CreatePersonForm({ onSuccessToast }: CreatePersonFormProps) {
   const {
     mutate: createPerson,
     isPending,
@@ -29,7 +31,6 @@ export function CreatePersonForm() {
       : "Failed to create person.";
 
   const onSubmit = (data: PersonCreate) => {
-    setSuccessToast(null);
     createPerson(
       {
         ...data,
@@ -38,37 +39,14 @@ export function CreatePersonForm() {
       {
         onSuccess: () => {
           reset();
-          setSuccessToast("Person added successfully.");
+          onSuccessToast("Person added successfully.");
         },
       },
     );
   };
 
-  useEffect(() => {
-    if (!successToast) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setSuccessToast(null);
-    }, 2500);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [successToast]);
-
   return (
-    <section className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
-      {successToast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="pointer-events-none absolute right-3 top-3 rounded-lg border border-emerald-300 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-800 shadow"
-        >
-          {successToast}
-        </div>
-      )}
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
       <h2>Add a Person</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}

@@ -38,13 +38,43 @@ This application is a family tree builder.
 
 ## Run Locally
 
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+
+### 1) Create environment files
+
+Backend (optional with current default SQLite setup):
+
+1. `cp backend/.env.example backend/.env`
+
+Frontend:
+
+1. `cp frontend/.env.example frontend/.env`
+
+### 2) Run backend API
+
 1. `cd backend`
 2. `python3 -m pip install -r requirements.txt`
 3. `python3 app.py`
 
-Swagger UI:
+Backend URLs:
 
-- `http://127.0.0.1:8000/docs`
+- API base: `http://127.0.0.1:8000`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+
+### 3) Run frontend
+
+Open a new terminal:
+
+1. `cd frontend`
+2. `npm ci`
+3. `npm run dev`
+
+Frontend URL:
+
+- `http://127.0.0.1:5173`
 
 ## What I Would Do With More Time
 

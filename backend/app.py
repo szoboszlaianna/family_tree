@@ -78,7 +78,7 @@ def get_person(person_id: UUID, session: Session = Depends(get_session)):
 
 
 @app.get(
-    "/people/",
+    "/people",
     response_model=list[Person],
     tags=["People"],
     summary="List people",

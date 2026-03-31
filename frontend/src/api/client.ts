@@ -18,7 +18,7 @@ const api = axios.create({
 
 // People endpoints
 export const peopleApi = {
-  list: () => api.get<Person[]>("/people/"),
+  list: () => api.get<Person[]>("/people"),
   get: (id: UUID) => api.get<Person>(`/people/${id}`),
   create: (data: PersonCreate) => api.post<Person>("/people", data),
   delete: (id: UUID) => api.delete(`/people/${id}`),

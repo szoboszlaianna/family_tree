@@ -1,49 +1,11 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
-import { useState } from "react";
-import { usePeopleList, useCreatePerson } from "./api/hooks";
+import { usePeopleList } from "./api/hooks";
+import { CreatePersonForm } from "./components/CreatePersonForm";
+import { CreateRelationshipForm } from "./components/CreateRelationshipForm";
 
 function AppContent() {
   const { data: people, isLoading, error, refetch } = usePeopleList();
-  const {
-    mutate: createPerson,
-    isPending,
-    error: createError,
-  } = useCreatePerson();
-  const [formData, setFormData] = useState({
-    name: "",
-    date_of_birth: "",
-    place_of_birth: "",
-  });
-
-  const createErrorMessage =
-    createError instanceof Error
-      ? createError.message
-      : "Failed to create person.";
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    createPerson(
-      {
-        name: formData.name,
-        date_of_birth: formData.date_of_birth,
-        place_of_birth: formData.place_of_birth || undefined,
-      },
-      {
-        onSuccess: () => {
-          setFormData({ name: "", date_of_birth: "", place_of_birth: "" });
-        },
-      },
-    );
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   return (
     <main className="mx-auto grid w-full max-w-5xl gap-5 px-4 pb-12 pt-8 sm:px-6">
@@ -57,61 +19,8 @@ function AppContent() {
         </p>
       </header>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
-        <h2>Add a Person</h2>
-        <form onSubmit={handleSubmit} className="mt-3 grid max-w-[460px] gap-3">
-          <label className="grid gap-1.5">
-            <span className="text-sm font-semibold text-slate-800">Name</span>
-            <input
-              type="text"
-              name="name"
-              placeholder="e.g. Ada Lovelace"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm transition outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-200"
-            />
-          </label>
-          <label className="grid gap-1.5">
-            <span className="text-sm font-semibold text-slate-800">
-              Date of Birth
-            </span>
-            <input
-              type="date"
-              name="date_of_birth"
-              value={formData.date_of_birth}
-              onChange={handleInputChange}
-              required
-              className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm transition outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-200"
-            />
-          </label>
-          <label className="grid gap-1.5">
-            <span className="text-sm font-semibold text-slate-800">
-              Place of Birth
-            </span>
-            <input
-              type="text"
-              name="place_of_birth"
-              placeholder="optional"
-              value={formData.place_of_birth}
-              onChange={handleInputChange}
-              className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm transition outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-200"
-            />
-          </label>
-          {createError && (
-            <p className="m-0 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2.5 text-sm text-rose-800">
-              Create failed: {createErrorMessage}
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-xl bg-gradient-to-br from-teal-700 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-emerald-50 transition hover:opacity-95 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-65"
-          >
-            {isPending ? "Creating..." : "Add Person"}
-          </button>
-        </form>
-      </section>
+      <CreatePersonForm />
+      <CreateRelationshipForm people={people ?? []} />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_22px_rgba(4,55,50,0.06)]">
         <div className="mb-3.5 flex items-center justify-between gap-2.5">

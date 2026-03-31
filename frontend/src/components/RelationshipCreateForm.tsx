@@ -10,11 +10,13 @@ type RelationshipFormValues = {
 interface CreateRelationshipFormProps {
   people: Person[];
   onSuccessToast: (message: string) => void;
+  onErrorToast: (message: string) => void;
 }
 
 export function CreateRelationshipForm({
   people,
   onSuccessToast,
+  onErrorToast,
 }: CreateRelationshipFormProps) {
   const {
     mutate: createRelationship,
@@ -43,6 +45,9 @@ export function CreateRelationshipForm({
       onSuccess: () => {
         reset();
         onSuccessToast("Relationship added successfully.");
+      },
+      onError: () => {
+        onErrorToast(createErrorMessage);
       },
     });
   };

@@ -4,9 +4,13 @@ import type { PersonCreate } from "../api/types";
 
 interface CreatePersonFormProps {
   onSuccessToast: (message: string) => void;
+  onErrorToast: (message: string) => void;
 }
 
-export function CreatePersonForm({ onSuccessToast }: CreatePersonFormProps) {
+export function CreatePersonForm({
+  onSuccessToast,
+  onErrorToast,
+}: CreatePersonFormProps) {
   const {
     mutate: createPerson,
     isPending,
@@ -40,6 +44,9 @@ export function CreatePersonForm({ onSuccessToast }: CreatePersonFormProps) {
         onSuccess: () => {
           reset();
           onSuccessToast("Person added successfully.");
+        },
+        onError: () => {
+          onErrorToast(createErrorMessage);
         },
       },
     );

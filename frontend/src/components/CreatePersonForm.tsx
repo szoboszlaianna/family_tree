@@ -3,6 +3,8 @@ import { getApiErrorMessage } from "../api/client";
 import { useCreatePerson } from "../api/hooks";
 import type { PersonCreate } from "../api/types";
 
+const DOB_ERROR_PHRASES = ["date of birth", "future"];
+
 interface CreatePersonFormProps {
   onSuccessToast: (message: string) => void;
   onErrorToast: (message: string) => void;
@@ -21,6 +23,7 @@ export function CreatePersonForm({
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm<PersonCreate>({
     defaultValues: {
@@ -29,11 +32,6 @@ export function CreatePersonForm({
       place_of_birth: "",
     },
   });
-
-  const createErrorMessage = getApiErrorMessage(
-    createError,
-    "Failed to create person.",
-  );
 
   const onSubmit = (data: PersonCreate) => {
     createPerson(
@@ -47,7 +45,15 @@ export function CreatePersonForm({
           onSuccessToast("Person added successfully.");
         },
         onError: (error) => {
-          onErrorToast(getApiErrorMessage(error, "Failed to create person."));
+          const message = getApiErrorMessage(error, "Failed to create person.");
+          const isDobError = DOB_ERROR_PHRASES.some((phrase) =>
+            message.toLowerCase().includes(phrase),
+          );
+          if (isDobError) {
+            setError("date_of_birth", { message });
+          } else {
+            onErrorToast(message);
+          }
         },
       },
     );
@@ -101,12 +107,6 @@ export function CreatePersonForm({
             className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm transition outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-200"
           />
         </label>
-
-        {createError && (
-          <p className="m-0 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2.5 text-sm text-rose-800">
-            Create failed: {createErrorMessage}
-          </p>
-        )}
 
         <button
           type="submit"

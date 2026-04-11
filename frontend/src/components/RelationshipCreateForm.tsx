@@ -144,7 +144,7 @@ export function CreateRelationshipForm({
 
         {createError && (
           <p className="m-0 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2.5 text-sm text-rose-800">
-            Create failed: {createErrorMessage}
+            {createErrorMessage}
           </p>
         )}
 

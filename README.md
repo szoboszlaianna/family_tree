@@ -213,7 +213,9 @@ The backend has a unit test suite covering all validation rules using an in-memo
 
 ```bash
 cd backend
-python3 -m pip install pytest
+python3 -m venv ../.venv
+source ../.venv/bin/activate
+python -m pip install pytest
 pytest tests/
 ```
 
@@ -226,31 +228,38 @@ pytest tests/
 
 ### 1) Create environment files
 
-Backend (optional with current default SQLite setup):
+Backend:
 
-1. `cp backend/.env.example backend/.env`
+1. No `.env` is required for the current SQLite setup.
 
 Frontend:
 
 1. `cp frontend/.env.example frontend/.env`
 
-### 2) Run backend API
+### 2) Create and activate a virtual environment (recommended)
+
+From project root:
+
+1. `python3 -m venv .venv`
+2. `source .venv/bin/activate`
+
+### 3) Run backend API
 
 1. `cd backend`
-2. `python3 -m pip install -r requirements.txt`
-3. `python3 app.py`
+2. `python -m pip install -r requirements.txt`
+3. `python app.py` (or `python3 app.py` if your system maps Python 3 there)
 
 Backend URLs:
 
 - API base: `http://127.0.0.1:8000`
 - Swagger UI: `http://127.0.0.1:8000/docs`
 
-### 3) Run frontend
+### 4) Run frontend
 
 Open a new terminal:
 
 1. `cd frontend`
-2. `npm ci`
+2. `npm install`
 3. `npm run dev`
 
 Frontend URL:

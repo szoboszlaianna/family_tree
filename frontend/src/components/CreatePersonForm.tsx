@@ -14,11 +14,7 @@ export function CreatePersonForm({
   onSuccessToast,
   onErrorToast,
 }: CreatePersonFormProps) {
-  const {
-    mutate: createPerson,
-    isPending,
-    error: createError,
-  } = useCreatePerson();
+  const { mutate: createPerson, isPending } = useCreatePerson();
   const {
     register,
     handleSubmit,

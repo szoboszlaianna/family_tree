@@ -10,8 +10,6 @@ from sqlmodel import Session, select
 from uuid import UUID
 from validation import validate_dob_not_in_future, validate_relationship
 
-DATABASE_URL = "sqlite:///./family_tree.db"
-
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):

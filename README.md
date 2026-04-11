@@ -1,6 +1,20 @@
 ## Family Tree Mini-Builder
 
-This application is a family tree builder.
+A full-stack demo for constructing a simple family tree. Users can create people, assign parent-child relationships, and view the resulting tree — with all business rules (age gap, max parents, cycle prevention) enforced server-side by a FastAPI backend backed by SQLite.
+
+## Contents
+
+- [Stack](#stack)
+- [Core Features](#core-features)
+- [Validation Rules](#validation-rules)
+- [API Endpoints](#api-endpoints)
+- [Tests](#tests)
+- [Run Locally](#run-locally)
+- [Data Model](#data-model)
+- [Architecture Overview](#architecture-overview)
+- [Design Decisions](#design-decisions)
+- [Where I Used AI](#where-i-used-ai)
+- [What I Would Do With More Time](#what-i-would-do-with-more-time)
 
 ## Stack
 
@@ -193,6 +207,16 @@ Returns the full tree payload for frontend rendering — all people, all relatio
 }
 ```
 
+## Tests
+
+The backend has a unit test suite covering all validation rules using an in-memory SQLite database.
+
+```bash
+cd backend
+python3 -m pip install pytest
+pytest tests/
+```
+
 ## Run Locally
 
 ### Prerequisites
@@ -266,6 +290,8 @@ person 1 ──< relationship >── 1 person
 
 A person can appear as `parent_id` in many rows and as `child_id` in at most 2 rows (enforced by application-level validation, not a DB constraint).
 
+See the [Validation Rules](#validation-rules) section for the full set of constraints applied on every relationship write.
+
 ## Architecture Overview
 
 ```
@@ -314,9 +340,9 @@ A person can appear as `parent_id` in many rows and as `child_id` in at most 2 r
 
 ## Where I Used AI
 
-**Tool:** GitHub Copilot in VS Code, using OpenAI o4-mini (Codex) for planning and either o4-mini or Claude Haiku for implementation tasks.
+**Tool:** GitHub Copilot in VS Code, using OpenAI GPT 5.3 (Codex) for planning and either Codex or Claude Haiku for implementation tasks.
 
-**Why:** Copilot is integrated directly into the editor, which keeps the feedback loop tight — I can accept, reject, or edit suggestions inline without switching context. I used the planning-oriented model for reasoning through design decisions (e.g. cycle detection strategy, validation ordering) and the faster model for routine implementation (e.g. boilerplate, test cases, Swagger annotations).
+**Why:** Copilot is integrated directly into the editor. I used the planning-oriented model for reasoning through design decisions (e.g. cycle detection strategy, validation ordering) and the faster and cheaper model for routine implementation (e.g. boilerplate, test cases, Swagger annotations).
 
 **What I used it for:**
 - Planning the overall architecture and validation rule ordering
@@ -324,7 +350,7 @@ A person can appear as `parent_id` in many rows and as `child_id` in at most 2 r
 - Generating the BFS cycle detection logic as a starting point, which I then reviewed and adapted
 - Adding Swagger/OpenAPI documentation to endpoints
 - Frontend layout assistance and finding the right Tailwind CSS classes
-- Writing this README
+- Writing this README, generating diagrams.
 
 ## What I Would Do With More Time
 

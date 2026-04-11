@@ -211,12 +211,23 @@ Returns the full tree payload for frontend rendering — all people, all relatio
 
 The backend has a unit test suite covering all validation rules using an in-memory SQLite database.
 
+Run tests locally:
+
 ```bash
 cd backend
-python3 -m venv ../.venv
-source ../.venv/bin/activate
+python -m venv ../.venv
+source ../.venv/bin/activate  # macOS/Linux
+# .\\..\\.venv\\Scripts\\activate  # Windows PowerShell
 python -m pip install pytest
 pytest tests/
+```
+
+CI is configured with GitHub Actions in `.github/workflows/ci.yml` and runs automatically on every `push` and `pull_request`.
+
+If you use GitHub CLI, you can inspect recent runs with:
+
+```bash
+gh run list
 ```
 
 ## Run Locally

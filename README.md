@@ -76,6 +76,22 @@ Frontend URL:
 
 - `http://127.0.0.1:5173`
 
+## Design Decisions
+
+- **Primary key as `UUID` with `default_factory`** — allows creating a model instance in Python without an ID before persisting, keeping object construction clean and letting the database assign the ID on save.
+- **BFS for cycle detection** — family trees tend to be wide rather than deep, so BFS explores the most likely nodes first and avoids unnecessary recursion depth.
+- **Manual relationship deletion before person deletion** — SQLite does not enforce foreign key cascades by default. Deleting relationships explicitly before the person record keeps the database clean without requiring a pragma change.
+- **Backend as source of truth** — all validation rules are enforced server-side. The frontend performs optional prechecks for UX only, so the API is safe to call directly.
+- **Calendar-year age gap calculation** — using year arithmetic with a birthday check rather than approximate day counts avoids incorrect results on boundary dates and leap years.
+
+## Where I Used AI
+
+- Generating the initial test suite structure for validation rules
+- Generating the BFS cycle detection logic as a starting point, which I then reviewed and adapted
+- Adding Swagger/OpenAPI documentation to endpoints
+- Frontend layout assistance and finding the right Tailwind CSS classes
+- Documentation
+
 ## What I Would Do With More Time
 
 - Split routes into separate router files as the API grows

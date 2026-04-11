@@ -28,7 +28,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -134,7 +138,19 @@ def delete_person(person_id: UUID, session: Session = Depends(get_session)):
     }
 
 
-@app.post("/relationships", response_model=Relationship)
+@app.post(
+    "/relationships",
+    response_model=Relationship,
+    status_code=201,
+    tags=["Relationships"],
+    summary="Create a parent-child relationship",
+    description=(
+        "Creates a parent-child relationship between two existing people. "
+        "Validates all business rules server-side: max 2 parents, minimum 15-year age gap, "
+        "no cycles, no self-parent, and no duplicate relationships."
+    ),
+    response_description="The created relationship.",
+)
 def create_relationship(
     parent_id: UUID, child_id: UUID, session: Session = Depends(get_session)
 ):
@@ -164,7 +180,13 @@ def create_relationship(
     return relationship
 
 
-@app.delete("/relationships/{parent_id}/{child_id}")
+@app.delete(
+    "/relationships/{parent_id}/{child_id}",
+    tags=["Relationships"],
+    summary="Delete a relationship",
+    description="Removes the parent-child relationship between the given parent and child IDs.",
+    response_description="Deletion confirmation.",
+)
 def delete_relationship(
     parent_id: UUID, child_id: UUID, session: Session = Depends(get_session)
 ):

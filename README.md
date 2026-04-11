@@ -79,5 +79,8 @@ Frontend URL:
 ## What I Would Do With More Time
 
 - Split routes into separate router files as the API grows
+- Dragging functionality for tree
+- Bicep code for deployment.
+
 
 

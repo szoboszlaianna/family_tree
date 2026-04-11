@@ -96,7 +96,11 @@ Frontend URL:
 
 - Split routes into separate router files as the API grows
 - Dragging functionality for tree
-- Bicep code for deployment.
+- Bicep code for deployment
+- API integration tests covering key endpoint behaviours (e.g. future DOB → 400, duplicate relationship → 400, tree shape after inserts)
+- End-to-end tests with Playwright covering the full form → tree flow (create person, add relationship, verify tree renders)
+- Structured logging (e.g. `structlog`) so request traces and validation errors are queryable in production
+- Docker Compose so the full stack (backend + frontend) starts with a single `docker compose up`
 
 
 
